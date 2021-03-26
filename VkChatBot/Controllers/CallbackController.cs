@@ -37,14 +37,24 @@ namespace VkChatBot.Controllers
                     var msg = Message.FromJson(new VkResponse(updates.Object));
                     
                     // Отправим в ответ полученный от пользователя текст
-                    var message = new MessagesSendParams
+                    /*var message = new MessagesSendParams
                     {
                         RandomId = new DateTime().Millisecond,
                         PeerId = msg.PeerId.Value,
                         Message = msg.Text
                     };
                     
+                    _vkApi.Messages.Send(message);*/
+                    
+                    var message = new MessagesSendParams
+                    {
+                        RandomId = new DateTime().Millisecond,
+                        PeerId = 10850844,
+                        Message = "test"
+                    };
+                    
                     _vkApi.Messages.Send(message);
+                    
                     break;
                 }
             }
