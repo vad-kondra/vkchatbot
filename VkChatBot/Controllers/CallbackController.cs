@@ -25,13 +25,23 @@ namespace VkChatBot.Controllers
         [HttpPost]
         public IActionResult Callback([FromBody] Updates updates)
         {
+            
+            var message = new MessagesSendParams
+            {
+                RandomId = new DateTime().Millisecond,
+                PeerId = 10850844,
+                Message = "test"
+            };
+                    
+            _vkApi.Messages.Send(message);
+            
             // Проверяем, что находится в поле "type" 
             switch (updates.Type)
             {
-                // Если это уведомление для подтверждения адреса
                 case "confirmation":
-                    // Отправляем строку для подтверждения 
-                    return Ok(_configuration["Config:Confirmation"]);
+                    var confirmation = _configuration["Config:Confirmation"];
+                        
+                    return Ok(confirmation);
                 case "message_new":{
                     // Десериализация
                     var msg = Message.FromJson(new VkResponse(updates.Object));
@@ -45,16 +55,6 @@ namespace VkChatBot.Controllers
                     };
                     
                     _vkApi.Messages.Send(message);*/
-                    
-                    var message = new MessagesSendParams
-                    {
-                        RandomId = new DateTime().Millisecond,
-                        PeerId = 10850844,
-                        Message = "test"
-                    };
-                    
-                    _vkApi.Messages.Send(message);
-                    
                     break;
                 }
             }
