@@ -8,6 +8,8 @@ using VkNet.Utils;
 
 namespace VkChatBot.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class CallbackController : ControllerBase
     {
         private readonly IConfiguration _configuration;
