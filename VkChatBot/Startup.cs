@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using VkNet;
+using VkNet.Abstractions;
 using VkNet.Model;
 
 namespace VkChatBot
@@ -28,11 +29,8 @@ namespace VkChatBot
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "VkChatBot", Version = "v1"}); });
-
-
-            services.AddSingleton<VkApi>(sp =>
+            
+            services.AddSingleton<IVkApi>(sp =>
                 {
                     var vkApi = new VkApi();
                     var vkApiAuthParams = new ApiAuthParams
@@ -45,6 +43,9 @@ namespace VkChatBot
                     return vkApi;
                 }
             );
+            
+            services.AddControllers();
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "VkChatBot", Version = "v1"}); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
