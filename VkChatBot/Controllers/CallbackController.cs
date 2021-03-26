@@ -47,5 +47,20 @@ namespace VkChatBot.Controllers
             // Возвращаем "ok" серверу Callback API
             return Ok("ok");
         }
+        
+        [HttpGet]
+        public IActionResult Send()
+        {
+
+            var dialogs = _vkApi.Messages.GetConversations(new GetConversationsParams());
+
+            var messages = _vkApi.Messages.GetHistory(new MessagesGetHistoryParams()
+            {
+                PeerId = dialogs.Items[0].Conversation.Peer.Id
+            });
+            
+
+            return Ok(messages.Messages);
+        }
     }
 }
