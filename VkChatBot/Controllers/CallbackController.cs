@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using VkNet.Abstractions;
@@ -14,6 +15,9 @@ namespace VkChatBot.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IVkApi _vkApi;
+
+        private static List<Message> _messages = new();
+        
 
         public CallbackController(IConfiguration configuration, IVkApi vkApi)
         {
@@ -34,13 +38,18 @@ namespace VkChatBot.Controllers
                 case "message_new":{
                     // Десериализация
                     var msg = Message.FromJson(new VkResponse(updates.Object));
+                    
+                    _messages.Add(msg);
 
                     // Отправим в ответ полученный от пользователя текст
-                    _vkApi.Messages.Send(new MessagesSendParams{ 
+                    var message = new MessagesSendParams
+                    {
                         RandomId = new DateTime().Millisecond,
                         PeerId = msg.PeerId.Value,
                         Message = msg.Text
-                    });
+                    };
+                    
+                    _vkApi.Messages.Send(message);
                     break;
                 }
             }
@@ -58,9 +67,10 @@ namespace VkChatBot.Controllers
             {
                 PeerId = dialogs.Items[0].Conversation.Peer.Id
             });
-            
 
-            return Ok(messages.Messages);
+            var result = _messages;
+
+            return Ok(result);
         }
     }
 }
