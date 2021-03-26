@@ -53,7 +53,7 @@ namespace VkChatBot.Controllers
         }
         
         [HttpGet]
-        public IActionResult Send()
+        public IActionResult Send(string text)
         {
 
             var dialogs = _vkApi.Messages.GetConversations(new GetConversationsParams());
@@ -67,7 +67,7 @@ namespace VkChatBot.Controllers
             {
                 RandomId = new DateTime().Millisecond,
                 PeerId = 10850844,
-                Message = "кукареку"
+                Message = text
             };
                     
             _vkApi.Messages.Send(message);
