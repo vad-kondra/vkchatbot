@@ -15,11 +15,7 @@ namespace VkChatBot.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IVkApi _vkApi;
-
-        private static Dictionary<int, Message> _messages = new();
-        private static int _start = 0;
         
-
         public CallbackController(IConfiguration configuration, IVkApi vkApi)
         {
             _configuration = configuration;
@@ -40,9 +36,6 @@ namespace VkChatBot.Controllers
                     // Десериализация
                     var msg = Message.FromJson(new VkResponse(updates.Object));
                     
-                    _messages.Add(_start, msg);
-                    _start++;
-
                     // Отправим в ответ полученный от пользователя текст
                     var message = new MessagesSendParams
                     {
@@ -70,7 +63,16 @@ namespace VkChatBot.Controllers
                 PeerId = dialogs.Items[0].Conversation.Peer.Id
             });
 
-            var result = _messages;
+            var message = new MessagesSendParams
+            {
+                RandomId = new DateTime().Millisecond,
+                PeerId = 10850844,
+                Message = "кукареку"
+            };
+                    
+            _vkApi.Messages.Send(message);
+            
+            var result = messages;
 
             return Ok(result);
         }
