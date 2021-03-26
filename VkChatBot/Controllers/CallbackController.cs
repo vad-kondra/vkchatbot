@@ -16,7 +16,8 @@ namespace VkChatBot.Controllers
         private readonly IConfiguration _configuration;
         private readonly IVkApi _vkApi;
 
-        private static List<Message> _messages = new();
+        private static Dictionary<int, Message> _messages = new();
+        private static int _start = 0;
         
 
         public CallbackController(IConfiguration configuration, IVkApi vkApi)
@@ -39,7 +40,8 @@ namespace VkChatBot.Controllers
                     // Десериализация
                     var msg = Message.FromJson(new VkResponse(updates.Object));
                     
-                    _messages.Add(msg);
+                    _messages.Add(_start, msg);
+                    _start++;
 
                     // Отправим в ответ полученный от пользователя текст
                     var message = new MessagesSendParams
